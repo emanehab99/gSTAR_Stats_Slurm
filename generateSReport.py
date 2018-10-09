@@ -1,4 +1,5 @@
 import sys
+import datetime
 import pandas as pd
 
 from reportFromDB import Report
@@ -39,9 +40,9 @@ if __name__=='__main__':
     #
     # print(data['Account'])
 
-    filename = 'files/user_utilisation_q4_2.txt'
-    startdate = '2018-04-01'
-    enddate = '2018-06-30'
+    filename = 'files/user_utilisation_2018_q3.txt'
+    startdate = '2018-07-01'
+    enddate = '2018-09-30'
 
     data = pd.read_csv(filename, sep="|", header=None)
     data.columns = ['Cluster', 'Login', 'Name', 'Account', 'Used', 'Energy']
@@ -73,7 +74,8 @@ if __name__=='__main__':
         # print(myreport.getSlurmInstitutionUsagePercent())
         # print(myreport.getSlurmUsageByDemographic())
 
-        ReportFormat().generateSlurmReport(Report(dbconfig, startdate, enddate, type='slurm', slurmdata=data))
+        ReportFormat().generateSlurmReport(Report(dbconfig, startdate, enddate, type='slurm', slurmdata=data),
+                                           TAOreport(dbconfig, datetime.date(2018, 7, 1), datetime.date(2018, 9, 30)))
 
     except Exception as exp:
         raise exp

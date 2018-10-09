@@ -36,6 +36,9 @@ class TAOreport:
             self.startdate = startdate
             self.enddate = enddate
 
+            print(startdate)
+            print(enddate)
+
             print('Connected')
 
 
@@ -70,7 +73,9 @@ class TAOreport:
             "and (username not in (%s))"
         )
 
-        self.pgcursor.execute(select_noofjobs, (self.startdate, self.enddate, self.adminusers,))
+
+
+        self.pgcursor.execute(select_noofjobs, (self.startdate, self.enddate, self.adminusers))
 
         noofjobs = 0
         count = self.pgcursor.fetchone()
@@ -90,9 +95,12 @@ class TAOreport:
         select_registeredusers = (
             "SELECT count(*) FROM tao_taouser "
             "WHERE username NOT IN (%s) "
+
         )
 
-        self.mysqlcursor.execute(select_registeredusers, (self.adminusers,))
+        select_registeredusers = select_registeredusers % self.adminusers
+        print(select_registeredusers)
+        self.mysqlcursor.execute(select_registeredusers, self.adminusers)
 
         users = 0
         x = self.mysqlcursor.fetchone()
@@ -115,7 +123,8 @@ class TAOreport:
             "AND (username NOT IN (%s)) "
         )
 
-        self.pgcursor.execute(select_activeusers, (self.startdate, self.enddate, self.adminusers,))
+
+        self.pgcursor.execute(select_activeusers, (self.startdate, self.enddate, self.adminusers))
 
         activeusers = 0
         x = self.pgcursor.fetchone()

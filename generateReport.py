@@ -21,6 +21,7 @@ from pylatex.utils import bold, NoEscape
 
 from reportFromDB import Report, MALE, FEMALE, ASTRONOMY, STUDENT
 from taoreportfromdb import TAOreport
+
 from statsConfig import readdbconfig
 
 
@@ -157,7 +158,55 @@ class ReportFormat(object):
             report.finalize()
             taoreport.finalize()
 
-    def generateSlurmReport(self, report):
+    def addTAOStats(self, taoreport):
+        # -----------------------TAO Stats---------------------------------------------------
+        # Start a new page for TAO Stats
+        self.doc.append(NoEscape(r"\newpage"))
+        self.doc.append(Section("TAO Usage Statistics"))
+
+        print("Extracting General TAO Usage ...")
+        sectiontitle = "General TAO Usage (total for {0} to {1})".format(taoreport.startdate.strftime("%d/%m/%Y"),
+                                                                         taoreport.enddate.strftime("%d/%m/%Y"))
+        self.doc.append(Subsection(sectiontitle))
+        accounts_data = []
+        accounts_data.append(("Number of jobs", taoreport.getnoofjobs()))
+        accounts_data.append(("Number of active users", taoreport.getactiveusers()))
+
+        datasize = taoreport.getdatasize()
+
+        accounts_data.append(("Total records returned", datasize[1]))
+        accounts_data.append(("Total data-size returned", datasize[0]))
+
+        accounts_data.append(("Registered users", taoreport.getregisteredusers()))
+
+        accounts_data.append(("Page views (Google analytics)", ""))
+        accounts_data.append(("Unique users (Google analytics)", ""))
+
+        self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
+
+        print("Extracting Data access breakdown per database ...")
+        sectiontitle = "General Data access breakdown per database ({0} to {1})".format(
+            taoreport.startdate.strftime("%d/%m/%Y"), taoreport.enddate.strftime("%d/%m/%Y"))
+        self.doc.append(Subsection(sectiontitle))
+
+        databasejobs = taoreport.getjobsbydatabase()
+        accounts_data = databasejobs.items()
+
+        self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
+
+        print("TAO site access by location from Google analytics ...")
+        sectiontitle = "TAO site access by location from Google analytics ({0} to {1})".format(
+            taoreport.startdate.strftime("%d/%m/%Y"),
+            taoreport.enddate.strftime("%d/%m/%Y"))
+        self.doc.append(Subsection(sectiontitle))
+
+        accounts_data = []
+        accounts_data.append(("Australia", ""))
+        accounts_data.append(("USA", ""))
+
+        self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
+
+    def generateSlurmReport(self, report, taoreport):
         try:
             myfilename = "latex_files/" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
@@ -218,6 +267,8 @@ class ReportFormat(object):
 
             self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
+            # ######## TAO STATS
+            self.addTAOStats(taoreport)
 
             # Generating PDF file
             self.doc.generate_pdf(myfilename, clean_tex=False)
@@ -226,6 +277,7 @@ class ReportFormat(object):
             raise exp
         finally:
             report.finalize()
+            taoreport.finalize()
 
 
 

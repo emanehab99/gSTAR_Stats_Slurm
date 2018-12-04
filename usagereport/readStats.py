@@ -7,7 +7,7 @@ Usage:
 """
 import sys
 
-import statsConfig
+from usagereport import statsConfig
 from statsToDB import Stats
 
 

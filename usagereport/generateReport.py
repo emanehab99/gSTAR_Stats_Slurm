@@ -19,10 +19,9 @@ from pylatex import Document, Section, Subsection, LongTabu, Command
 from pylatex.utils import bold, NoEscape
 
 
-from reportFromDB import Report, MALE, FEMALE, ASTRONOMY, STUDENT
-from taoreportfromdb import TAOreport
+from usagereport.export.reportFromDB import Report, MALE, FEMALE, ASTRONOMY, STUDENT
 
-from statsConfig import readdbconfig
+from usagereport.statsConfig import readdbconfig
 
 
 

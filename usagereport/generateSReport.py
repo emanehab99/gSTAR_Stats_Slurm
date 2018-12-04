@@ -2,14 +2,12 @@ import sys
 import datetime
 import pandas as pd
 
-from reportFromDB import Report
-from taoreportfromdb import TAOreport
-from statsConfig import readdbconfig
+from usagereport.export.taoreportfromdb import TAOreport
+from usagereport.statsConfig import readdbconfig
 
-from generateReport import ReportFormat
+from usagereport.export.generateReport import ReportFormat
 
-from reportFromDB import Report, MALE, FEMALE, ASTRONOMY, STUDENT
-
+from usagereport.export.reportFromDB import Report
 
 if __name__=='__main__':
 

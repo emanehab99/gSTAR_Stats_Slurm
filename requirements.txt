@@ -1,6 +1,7 @@
 pylatex==1.2.1
 mysql-connector==2.1.6
 psycopg2==2.7.3.1
+pandas==0.23.0
 pytest==4.0.1
 
 

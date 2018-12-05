@@ -5,11 +5,12 @@ import pandas as pd
 from usagereport.export.taoreportfromdb import TAOreport
 from usagereport.statsConfig import readdbconfig
 
-from usagereport.export.generateReport import ReportFormat
+from usagereport.generateReport import ReportFormat
 
 from usagereport.export.reportFromDB import Report
+from usagereport import statsConfig
 
-if __name__=='__main__':
+if __name__ == '__main__':
 
     # calculate reporting period/quarter based on current date
 
@@ -24,8 +25,6 @@ if __name__=='__main__':
     #     startdate = input('Enter start date (YYYY-mm-dd): ')
     #     enddate = input('Enter end date (YYYY-mm-dd): ')
 
-
-
     # print(filename)
 
     # print(len(text.splitlines()))
@@ -38,7 +37,8 @@ if __name__=='__main__':
     #
     # print(data['Account'])
 
-    filename = 'files/user_utilisation_2018_q3.txt'
+    filename = statsConfig.read_path('config.ini') + '/user_utilisation_2018_q3.txt'
+    print(filename)
     startdate = '2018-07-01'
     enddate = '2018-09-30'
 
@@ -49,7 +49,6 @@ if __name__=='__main__':
     # data.set_index(['Login', 'Account'])
     # print(data[['Login', 'Account', 'Used']])
     # print(data[data.Login =='msinha'].Used.sum())
-
 
     dbconfig = readdbconfig('db_config.ini')
     #
@@ -79,6 +78,3 @@ if __name__=='__main__':
         raise exp
     # finally:
     #     myreport.finalize()
-
-
-

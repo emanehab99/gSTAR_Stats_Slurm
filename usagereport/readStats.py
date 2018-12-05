@@ -8,7 +8,7 @@ Usage:
 import sys
 
 from usagereport import statsConfig
-from statsToDB import Stats
+from usagereport.statsimport.statsToDB import Stats
 
 
 if __name__=='__main__':

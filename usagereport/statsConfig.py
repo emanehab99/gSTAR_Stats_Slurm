@@ -38,6 +38,7 @@ def readdbconfig(filename='db_config.ini'):
 
     return myconfig
 
+
 def getsectionitems(myparser, mysection):
     """
     returns all items in a single section as a dictionary
@@ -55,6 +56,7 @@ def getsectionitems(myparser, mysection):
         raise Exception('{0} not found'.format(mysection))
 
     return mydict
+
 
 def read_path(filename='config.ini', section='statspath'):
 

@@ -1,14 +1,6 @@
+import usagereport
+
 import pytest
 
-
-
-@pytest.fixture(scope='class')
-def db_connection():
-    pass
-
-
-class TestGenerateSlurmReport(object):
-    """
-    This class will test
-    """
-
+def test_db_connection():
+    print('Connected')

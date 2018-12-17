@@ -13,7 +13,7 @@ def readdbconfig(filename='db_config.ini'):
     parser = ConfigParser()
     parser.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config', filename))
 
-    # vector of all configs (dictionaries)
+    # dictionary of all configs (dictionaries)
     myconfig = {}
 
     # gSTAR stats mysql
@@ -74,3 +74,14 @@ def read_path(filename='config.ini', section='statspath'):
         raise Exception('{0} not found in the {1} file'.format(section, filename))
 
     return path
+
+
+def read_reportingperiod(filename='config.ini', section='reportingperiod'):
+
+    # create parser and read ini configuration file
+    parser = ConfigParser()
+    parser.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config', filename))
+
+    reportingperiod = getsectionitems(parser, section)
+
+    return reportingperiod

@@ -37,7 +37,7 @@ def reportingperiod():
 
 @pytest.fixture(scope='module')
 def slurmstats():
-    filename = read_path() + '/user_utilisation_2018_q3.txt'
+    filename = read_path()
     slurmstats = pd.read_csv(filename, sep="|", header=None)
     slurmstats.columns = ['Cluster', 'Login', 'Name', 'Account', 'Used', 'Energy']
     return slurmstats

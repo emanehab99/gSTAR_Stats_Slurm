@@ -15,7 +15,7 @@ class DatabaseConnection(object):
             try:
                 print('Connecting to MySQL Database...')
                 _conn = DatabaseConnection._instance._conn = mysql.connector.connect(**sqldb)
-                _cursor =  DatabaseConnection._instance._cursor = _conn.cursor()
+                _cursor = DatabaseConnection._instance._cursor = _conn.cursor()
                 _cursor.execute('SELECT VERSION()')
                 version = _cursor.fetchone()
 
@@ -27,13 +27,16 @@ class DatabaseConnection(object):
 
         return cls._instance
 
-    def __init__(self, dbconfig):
+    def __del__(self):
         self.connection = self._instance._conn
         self.cursor = self._instance._cursor
 
-
     def __enter__(self):
         return self
+
+    def __init__(self):
+        self.connection = self._instance._conn
+        self.cursor = self._instance._cursor
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.cursor.close()

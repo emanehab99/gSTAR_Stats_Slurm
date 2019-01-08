@@ -275,7 +275,7 @@ class ReportFormat(object):
         except Exception as exp:
             raise exp
         finally:
-            report.finalize()
+        #     report.finalize()
             taoreport.finalize()
 
 

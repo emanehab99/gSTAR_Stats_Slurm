@@ -48,7 +48,6 @@ class User(object):
         self.is_australia = IS_AUSTRALIA[country]
         self.usage = user_data[8]
 
-
     def __str__(self):
         """
         Formats Project object as string to be printed
@@ -86,7 +85,6 @@ class SlurmUser(object):
         self.is_australia = IS_AUSTRALIA[country]
         self.usage = 0
 
-
     def __str__(self):
         """
         Formats Project object as string to be printed
@@ -110,7 +108,7 @@ class Report(object):
 
     """
 
-    def __init__(self, dbconfig, startdate, enddate, type='moab', slurmdata=None):
+    def __init__(self, dbcon, startdate, enddate, type='moab', slurmdata=None):
 
         """
 
@@ -118,47 +116,70 @@ class Report(object):
         :param startdate: report start date, start of quarter
         :param enddate: report end date, end of quarter
         :param type: MOAB or Slurm report. default is moab
-        :param slurmdata: Dataframe contains Slurm user utilisation information per project in CPU hours.
+        :param slurmdata: Dataframe _contains Slurm user utilisation information per project in CPU hours.
             needed only if it is Slurm report
         """
         # connect to database schema using dbconfig dictionary
         # gSTAR stats MySQL DB entry in dbconfig
 
-        mysqldb = dbconfig['mysql']
-        self.con = mysql.connector.connect(**mysqldb)
-        self.cursor = self.con.cursor()
-        print('connected to DB')
+        # mysqldb = dbconfig['mysql']
+        # self._con = mysql.connector.connect(**mysqldb)
+        self._con = dbcon
+        self._cursor = self._con.cursor()
+        self._startdate = startdate
+        self._enddate = enddate
 
-        self.startdate = startdate
-        self.enddate = enddate
-
-        # Dataframe contains Slurm user utilisation information per project in CPU hours, drop [hpc, testers, root] projects
+        # Dataframe contains Slurm user utilisation information per project in CPU hours,
+        # drop [hpc, testers, root] projects
         discardprojects = ['hpcadmin', 'testers', 'root']
         self.slurmdata = slurmdata
 
-        print("Start Date {0}, end date {1}".format(self.startdate, self.enddate))
+        print("Start Date {0}, end date {1}".format(self._startdate, self._enddate))
 
-        print(str.format('Generating Report for the period from {0} to {1} ...', self.startdate, self.enddate))
+        print(str.format('Generating Report for the period from {0} to {1} ...', self._startdate, self._enddate))
 
         # Total usage from startdate to enddate, will be used in other parts of the report
         if type == 'moab':
-            self.totalusage = self.getTotalUsage()
+            self._totalusage = self.getTotalUsage()
             self.usersinfo = self.getUsersInfo()
         elif type == 'slurm':
+            if not(slurmdata is None):
+                self.slurmdata = self.slurmdata[(self.slurmdata.Account.isin(discardprojects) == False)]
+                self._totalusage = self.gettotalusage_slurm()
+                self.slurmactiveusers = self.slurmdata.Login.unique()
+                return
+            else:
+                raise Exception("Slurm data is empty")
 
-            self.slurmdata = self.slurmdata[(self.slurmdata.Account.isin(discardprojects) == False)]
-            self.totalusage = self.gettotalusage_slurm()
-            self.slurmactiveusers = self.slurmdata.Login.unique()
+        print(self._totalusage/1000)
 
-        print(self.totalusage/1000)
-
-    def finalize(self):
+    def finalise(self):
         # closing connection and cursor
-        self.cursor.close()
-        self.con.close()
-
+        self._cursor.close()
+        self._con.close()
         print("Resources released successfully")
+
+    def __del__(self):
+        self.finalise()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.finalise()
         print('Report generated successfully')
+
+    def __enter__(self):
+        return self
+
+    @property
+    def totalusage(self):
+        return self._totalusage
+
+    @property
+    def startdate(self):
+        return self._startdate
+
+    @property
+    def enddate(self):
+        return self._enddate
 
     def getAllProjects(self):
         """
@@ -173,9 +194,9 @@ class Report(object):
         )
 
         projects = []
-        self.cursor.execute(select_projs)
+        self._cursor.execute(select_projs)
 
-        for project in self.cursor:
+        for project in self._cursor:
             projects.append(Project(project))
 
         return projects
@@ -197,8 +218,8 @@ class Report(object):
 
         result = []
 
-        self.cursor.execute(select_astro)
-        for (deptid, institution, deptname, noofusers) in self.cursor:
+        self._cursor.execute(select_astro)
+        for (deptid, institution, deptname, noofusers) in self._cursor:
             result.append((institution, noofusers))
 
         return result
@@ -209,9 +230,9 @@ class Report(object):
         :return:
         """
         select_totalusage = "SELECT sum(service_units) from job_event WHERE type = 'JOBEND' AND DATE(time) BETWEEN DATE(%s) AND DATE(%s)"
-        self.cursor.execute(select_totalusage, (self.startdate, self.enddate))
+        self._cursor.execute(select_totalusage, (self._startdate, self._enddate))
 
-        return self.cursor.fetchone()[0]
+        return self._cursor.fetchone()[0]
 
 
     def getProjectUsage(self):
@@ -223,11 +244,11 @@ class Report(object):
         select_projectusage += "WHERE type='JOBEND' AND DATE(job_event.time) BETWEEN DATE(%s) AND DATE(%s) "
         select_projectusage += "GROUP BY account ORDER BY account"
 
-        self.cursor.execute(select_projectusage, (self.startdate, self.enddate))
+        self._cursor.execute(select_projectusage, (self._start, self._enddate))
 
         result = []
 
-        for (proj, usage) in self.cursor:
+        for (proj, usage) in self._cursor:
             result.append("{0:15s} {1} ".format(proj, usage))
 
         return "\n".join(result)
@@ -243,10 +264,10 @@ class Report(object):
             "WHERE gum_project.system_id = 1  "
         )
 
-        self.cursor.execute(select_projectusage, (self.totalusage, self.startdate, self.enddate))
+        self._cursor.execute(select_projectusage, (self._totalusage, self._startdate, self._enddate))
 
         result = []
-        for (proj, usage) in self.cursor:
+        for (proj, usage) in self._cursor:
             result.append((proj, str(usage) + "%" if usage is not None else '-'))
 
         return result
@@ -267,8 +288,8 @@ class Report(object):
         )
 
         users = dict()
-        self.cursor.execute(select_usersinfo)
-        for userdata in self.cursor:
+        self._cursor.execute(select_usersinfo)
+        for userdata in self._cursor:
             u = SlurmUser(userdata)
             users[u.username] = u.__dict__
 
@@ -302,10 +323,10 @@ class Report(object):
             # "WHERE gum_project.code =  %s "
         )
 
-        self.cursor.execute(select_projectusers)
+        self._cursor.execute(select_projectusers)
 
         projectusers_dict = dict()
-        for (id, code, username) in self.cursor:
+        for (id, code, username) in self._cursor:
             projectusers_dict[id] = (code, username)
 
         projectusers_df = pd.DataFrame.from_dict(data=projectusers_dict, orient='index', columns=['project_code', 'username'])
@@ -354,10 +375,10 @@ class Report(object):
             "ORDER BY percentage DESC"
         )
 
-        count = self.cursor.execute(select_institutionusage, (self.totalusage, self.startdate, self.enddate))
+        count = self._cursor.execute(select_institutionusage, (self._totalusage, self._startdate, self._enddate))
 
         result = []
-        for (inst, usage) in self.cursor:
+        for (inst, usage) in self._cursor:
             result.append((inst, str(usage) + "%"))
 
         return result
@@ -381,10 +402,10 @@ class Report(object):
         for i in range(len(filters)):
             select_nousers += "AND {0} = {1} ".format(filters[i][0], filters[i][1])
 
-        self.cursor.execute(select_nousers)
+        self._cursor.execute(select_nousers)
 
         nousers = 0
-        for (x) in self.cursor:
+        for (x) in self._cursor:
             nousers = x[0]
 
         return nousers
@@ -409,10 +430,10 @@ class Report(object):
         for filter in filters:
             select_noactiveusers += "AND {0} = {1} ".format(filter[0], filter[1])
 
-        self.cursor.execute(select_noactiveusers, (self.startdate, self.enddate))
+        self._cursor.execute(select_noactiveusers, (self._startdate, self._enddate))
 
         nousers = 0
-        for (x) in self.cursor:
+        for (x) in self._cursor:
             nousers = x[0]
 
         return nousers
@@ -431,9 +452,9 @@ class Report(object):
             "AND gum_user.username IN (SELECT DISTINCT user FROM job_event WHERE DATE(time) BETWEEN DATE(%s) AND DATE(%s) ) "
         )
 
-        self.cursor.execute(select_actswinastro, (self.startdate, self.enddate))
+        self._cursor.execute(select_actswinastro, (self._startdate, self._enddate))
 
-        return self.cursor.fetchone()[0]
+        return self._cursor.fetchone()[0]
 
     def getSwinAstronomersCount(self):
         """
@@ -447,9 +468,9 @@ class Report(object):
             "AND gum_usersystem.system_id = 1 "
         )
 
-        self.cursor.execute(select_swinastro)
+        self._cursor.execute(select_swinastro)
 
-        return self.cursor.fetchone()[0]
+        return self._cursor.fetchone()[0]
 
     def getAusUsersUsage(self):
         """
@@ -473,10 +494,10 @@ class Report(object):
             "ORDER BY percentage desc"
         )
 
-        self.cursor.execute(select_aususage, (self.totalusage, self.startdate, self.enddate,))
+        self._cursor.execute(select_aususage, (self._totalusage, self._startdate, self._enddate,))
 
         result = []
-        for (first, last, institution, username, usage) in self.cursor:
+        for (first, last, institution, username, usage) in self._cursor:
             result.append("{0:30s} {1:50s} {2:20s} {3} ".format(first + " " + last, institution, username, usage))
 
         return "\n".join(result)
@@ -505,8 +526,8 @@ class Report(object):
         )
 
         users = []
-        self.cursor.execute(select_userusage, (self.totalusage, self.startdate, self.enddate,))
-        for userdata in self.cursor:
+        self._cursor.execute(select_userusage, (self._totalusage, self._startdate, self._enddate,))
+        for userdata in self._cursor:
             users.append(User(userdata))
 
         # Dictionary of (demographic criteria, list of groups and usages)
@@ -566,11 +587,11 @@ class Report(object):
         :return: total usage in CPU hours
         '''
 
-        totalusage = 0
+        stotalusage = 0
 
-        totalusage = self.slurmdata.Used.sum()
+        stotalusage = self.slurmdata.Used.sum()
 
-        return totalusage
+        return stotalusage
 
 
     def getSlurmActiveUsersCount(self, filters=[]):
@@ -594,7 +615,7 @@ class Report(object):
             select_noactiveusers += "AND {0} = {1} ".format(filter[0], filter[1])
 
         format_strings = ','.join(['%s'] * len(self.slurmactiveusers))
-        self.cursor.execute(select_noactiveusers % format_strings, tuple(self.slurmactiveusers))
+        self._cursor.execute(select_noactiveusers % format_strings, tuple(self.slurmactiveusers))
 
         # select_noactiveusers = (
         #     "SELECT count(*) FROM gum_userdepartment "
@@ -610,23 +631,23 @@ class Report(object):
         #
         # print(select_noactiveusers)
         #
-        # self.cursor.execute(select_noactiveusers)
+        # self._cursor.execute(select_noactiveusers)
 
         nousers = 0
-        for (x) in self.cursor:
+        for (x) in self._cursor:
             nousers = x[0]
 
         return nousers
 
     def getSlurmProjectUsagePercent(self):
 
-        projectusage = round(self.slurmdata.groupby(by='Account').Used.sum() * 100.0 / self.totalusage, 3)
+        projectusage = round(self.slurmdata.groupby(by='Account').Used.sum() * 100.0 / self._totalusage, 3)
         projectusagelist = []
 
         select_ozstarprojects = "select code from gum_project where system_id = 2 and gum_project.code like 'oz%' order by code"
-        self.cursor.execute(select_ozstarprojects)
+        self._cursor.execute(select_ozstarprojects)
 
-        for project in self.cursor.fetchall():
+        for project in self._cursor.fetchall():
             usage = '{0}%'.format(projectusage[project[0]]) if project[0] in projectusage else '-'
             projectusagelist.append((project[0], usage))
 
@@ -645,9 +666,9 @@ class Report(object):
         )
 
         format_strings = ','.join(['%s'] * len(self.slurmactiveusers))
-        self.cursor.execute(select_actswinastro % format_strings, tuple(self.slurmactiveusers))
+        self._cursor.execute(select_actswinastro % format_strings, tuple(self.slurmactiveusers))
 
-        return self.cursor.fetchone()[0]
+        return self._cursor.fetchone()[0]
 
     def getSlurmInstitutionUsagePercent(self):
         """
@@ -675,11 +696,11 @@ class Report(object):
 
         userusage = self.slurmdata.groupby(by='Login').Used.sum()
 
-        self.cursor.execute(select_institutionusers)
+        self._cursor.execute(select_institutionusers)
 
         userinst_dict = dict()
 
-        for (username, inst) in self.cursor.fetchall():
+        for (username, inst) in self._cursor.fetchall():
             userinst_dict[username] = [inst, userusage[username] if username in userusage.keys() else 0]
 
 
@@ -690,7 +711,7 @@ class Report(object):
 
         result = []
         for inst in instusage.keys():
-            result.append((inst, str(round((instusage[inst] * 100.0)/self.totalusage, 3)) + "%"))
+            result.append((inst, str(round((instusage[inst] * 100.0)/self._totalusage, 3)) + "%"))
 
         return result
 
@@ -715,8 +736,8 @@ class Report(object):
         userusage = self.slurmdata.groupby(by='Login').Used.sum()
 
         users = dict()
-        self.cursor.execute(select_userusage)
-        for userdata in self.cursor:
+        self._cursor.execute(select_userusage)
+        for userdata in self._cursor:
             u = SlurmUser(userdata)
             u.usage = userusage[u.username] if u.username in userusage.keys() else 0
             users[u.username] = u.__dict__
@@ -743,9 +764,7 @@ class Report(object):
         :param usersusage: user information and usage in a dataframe
         :return: List of groups and corresponding usage totals
         """
-
-
-        groupusage = round(usersusage.groupby(by=filter).usage.sum() * 100.0 / self.totalusage, 2)
+        groupusage = round(usersusage.groupby(by=filter).usage.sum()*100.0/self._totalusage, 2)
         # print(groupusage)
 
         return groupusage
@@ -768,10 +787,10 @@ class Report(object):
         for i in range(len(filters)):
             select_nousers += "AND {0} = {1} ".format(filters[i][0], filters[i][1])
 
-        self.cursor.execute(select_nousers)
+        self._cursor.execute(select_nousers)
 
         nousers = 0
-        for (x) in self.cursor:
+        for (x) in self._cursor:
             nousers = x[0]
 
         return nousers
@@ -787,9 +806,9 @@ class Report(object):
             "WHERE gum_userdepartment.department_id = 6 AND gum_usersystem.system_id = 2 "
         )
 
-        self.cursor.execute(select_swinastro)
+        self._cursor.execute(select_swinastro)
 
-        return self.cursor.fetchone()[0]
+        return self._cursor.fetchone()[0]
 
     def getOzSTARInstitutionAstronomers(self):
         """
@@ -809,8 +828,8 @@ class Report(object):
 
         # result = []
         #
-        # self.cursor.execute(select_astro)
-        # for (deptid, institution, deptname, noofusers) in self.cursor:
+        # self._cursor.execute(select_astro)
+        # for (deptid, institution, deptname, noofusers) in self._cursor:
         #     result.append((institution, noofusers))
 
         select_astro = (
@@ -834,8 +853,8 @@ class Report(object):
 
         result = []
 
-        self.cursor.execute(select_astro)
-        for (institution, noofusers) in self.cursor:
+        self._cursor.execute(select_astro)
+        for (institution, noofusers) in self._cursor:
             result.append((institution, noofusers))
 
         return result

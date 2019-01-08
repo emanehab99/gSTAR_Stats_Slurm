@@ -1,6 +1,8 @@
 import sys
 import datetime
+
 import pandas as pd
+import mysql.connector
 
 from usagereport.export.taoreportfromdb import TAOreport
 from usagereport.statsConfig import readdbconfig
@@ -9,6 +11,7 @@ from usagereport.generateReport import ReportFormat
 
 from usagereport.export.reportFromDB import Report
 from usagereport import statsConfig
+from usagereport import database
 
 if __name__ == '__main__':
 
@@ -37,10 +40,10 @@ if __name__ == '__main__':
     #
     # print(data['Account'])
 
-    filename = statsConfig.read_path('config.ini') + '/user_utilisation_2018_q3.txt'
+    filename = statsConfig.read_path('config.ini') + '/user_utilisation_2018_q4.txt'
     print(filename)
-    startdate = '2018-07-01'
-    enddate = '2018-09-30'
+    startdate = '2018-10-01'
+    enddate = '2018-12-31'
 
     data = pd.read_csv(filename, sep="|", header=None)
     data.columns = ['Cluster', 'Login', 'Name', 'Account', 'Used', 'Energy']
@@ -50,7 +53,7 @@ if __name__ == '__main__':
     # print(data[['Login', 'Account', 'Used']])
     # print(data[data.Login =='msinha'].Used.sum())
 
-    dbconfig = readdbconfig('db_config.ini')
+
     #
     # Generating LaTex file (tex and pdf)
     # ReportFormat().generateReport(Report(dbconfig, startdate, enddate, type='slurm', slurmdata=data),
@@ -71,10 +74,13 @@ if __name__ == '__main__':
         # print(myreport.getSlurmInstitutionUsagePercent())
         # print(myreport.getSlurmUsageByDemographic())
 
-        ReportFormat().generateSlurmReport(Report(dbconfig, startdate, enddate, type='slurm', slurmdata=data),
-                                           TAOreport(dbconfig, datetime.date(2018, 7, 1), datetime.date(2018, 9, 30)))
+        dbconfig = readdbconfig('db_config.ini')
+        accountsdb = mysql.connector.connect(**dbconfig['mysql'])
+        print('connected to Accounts DB')
+        with Report(accountsdb, startdate, enddate, type='slurm', slurmdata=data) as screport:
+            taoreport = TAOreport(dbconfig, datetime.date(2018, 10, 1), datetime.date(2018, 12, 31))
+            ReportFormat().generateSlurmReport(screport, taoreport)
 
     except Exception as exp:
+        print("Error generating report {}".format(exp))
         raise exp
-    # finally:
-    #     myreport.finalize()

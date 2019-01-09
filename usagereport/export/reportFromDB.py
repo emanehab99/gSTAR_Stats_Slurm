@@ -155,12 +155,13 @@ class Report(object):
 
     def finalise(self):
         # closing connection and cursor
-        self._cursor.close()
-        self._con.close()
-        print("Resources released successfully")
+        if self._con:
+            self._cursor.close()
+            self._con.close()
+            print("Resources released successfully")
 
-    def __del__(self):
-        self.finalise()
+    # def __del__(self):
+    #     self.finalise()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.finalise()

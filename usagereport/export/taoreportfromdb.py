@@ -70,12 +70,18 @@ class TAOreport:
         select_noofjobs = (
             "select count(*) from public.jobs where latestjobversion=True "
             "and insertdate between Date(%s) and Date(%s) "
-            "and (username not in (%s))"
+            # "and (username not in (%s))"
         )
-
-
-
-        self.pgcursor.execute(select_noofjobs, (self.startdate, self.enddate, self.adminusers))
+        # admin_placeholders = ['%s '] * 4
+        # print(admin_placeholders)
+        # print(','.join(admin_placeholders))
+        excluded_users_clause = "and (username not in (%s))"
+        excluded_users_clause = excluded_users_clause % self.adminusers
+        select_noofjobs += excluded_users_clause
+        # params = {'startdate': str(self.startdate), 'enddate':str(self.enddate), 'admins':self.adminusers}
+        # select_noofjobs = select_noofjobs % params
+        # print(select_noofjobs)
+        self.pgcursor.execute(select_noofjobs, (self.startdate, self.enddate))
 
         noofjobs = 0
         count = self.pgcursor.fetchone()
@@ -100,7 +106,8 @@ class TAOreport:
 
         select_registeredusers = select_registeredusers % self.adminusers
         print(select_registeredusers)
-        self.mysqlcursor.execute(select_registeredusers, self.adminusers)
+        self.mysqlcursor.execute(select_registeredusers)
+        # self.mysqlcursor.execute(select_registeredusers, self.adminusers)
 
         users = 0
         x = self.mysqlcursor.fetchone()
@@ -120,11 +127,15 @@ class TAOreport:
         select_activeusers = (
             "SELECT count(DISTINCT username) FROM public.jobs "
             "WHERE latestjobversion = True AND insertdate BETWEEN Date(%s) AND Date(%s) "
-            "AND (username NOT IN (%s)) "
+            # "AND (username NOT IN (%s)) "
         )
 
+        excluded_users_clause = "AND (username NOT IN (%s)) "
+        excluded_users_clause = excluded_users_clause % self.adminusers
+        select_activeusers += excluded_users_clause
 
-        self.pgcursor.execute(select_activeusers, (self.startdate, self.enddate, self.adminusers))
+        # self.pgcursor.execute(select_activeusers, (self.startdate, self.enddate, self.adminusers))
+        self.pgcursor.execute(select_activeusers, (self.startdate, self.enddate))
 
         activeusers = 0
         x = self.pgcursor.fetchone()
@@ -139,10 +150,15 @@ class TAOreport:
         select_datasize = (
             "SELECT sum(filesize)/(1024.0*1024*1024), sum(recordscount) FROM public.jobs "
             "WHERE latestjobversion = True AND insertdate BETWEEN Date(%s) AND Date(%s) "
-            "AND (username NOT IN (%s)) "
+            # "AND (username NOT IN (%s)) "
         )
 
-        self.pgcursor.execute(select_datasize, (self.startdate, self.enddate, self.adminusers))
+        excluded_users_clause = "AND (username NOT IN (%s)) "
+        excluded_users_clause = excluded_users_clause % self.adminusers
+        select_datasize += excluded_users_clause
+        print(select_datasize)
+        # self.pgcursor.execute(select_datasize, (self.startdate, self.enddate, self.adminusers))
+        self.pgcursor.execute(select_datasize, (self.startdate, self.enddate))
 
         datasize = 0.0
         totalrecords = 0
@@ -163,10 +179,15 @@ class TAOreport:
         select_jobsbydb = (
             "SELECT count(*), database FROM jobs "
             "WHERE latestjobversion=True AND insertdate BETWEEN %s AND %s "
-            "AND (username NOT IN (%s)) GROUP BY database"
+            # "AND (username NOT IN (%s)) GROUP BY database"
         )
 
-        self.pgcursor.execute(select_jobsbydb, (self.startdate, self.enddate, self.adminusers))
+        excluded_users_clause = "AND (username NOT IN (%s)) GROUP BY database"
+        excluded_users_clause = excluded_users_clause % self.adminusers
+        select_jobsbydb += excluded_users_clause
+        print(select_jobsbydb)
+        # self.pgcursor.execute(select_jobsbydb, (self.startdate, self.enddate, self.adminusers))
+        self.pgcursor.execute(select_jobsbydb, (self.startdate, self.enddate))
 
 
         databasejobs = {}
@@ -228,9 +249,13 @@ class TAOreport:
             select_activeusers = (
                 "SELECT DISTINCT username FROM public.jobs "
                 "WHERE latestjobversion = True AND insertdate BETWEEN Date(%s) AND Date(%s) "
-                "AND username NOT IN ('amr','Amr.Hassan@swin.edu.au','yfenner','luke','ldeslandes') "
+                # "AND username NOT IN (%s) "
             )
 
+            excluded_users_clause = "AND username NOT IN (%s) "
+            excluded_users_clause = excluded_users_clause % self.adminusers
+            select_activeusers += excluded_users_clause
+            print(select_activeusers)
             self.pgcursor.execute(select_activeusers, (startdate, enddate))
 
             activeusers = {}

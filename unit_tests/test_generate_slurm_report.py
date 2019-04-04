@@ -5,10 +5,11 @@ import pytest
 from usagereport.export import reportFromDB
 
 
-def test_db_connection(self, accountsdbcursor):
+def test_db_connection(accountsdbcursor):
     accountsdbcursor.execute('select Version')
-    print(accountsdbcursor.fetchone())
+    print("MySQL Version is : {}".format(accountsdbcursor.fetchone()))
     print('Connected')
+
 
 @pytest.fixture(scope='class')
 def screport(accountsdbcon, reportingperiod, slurmstats):
@@ -17,7 +18,9 @@ def screport(accountsdbcon, reportingperiod, slurmstats):
     yield screport
     screport.finalize()
 
-class TestGenerateSlurmReport():
+@pytest.mark.usefixtures('screport')
+class TestGenerateSlurmReport(object):
 
     def test_users_information_dataframe_shape(self, screport):
         print(screport.usersinfo.shape)
+        assert screport.usersinfo.shape == 198

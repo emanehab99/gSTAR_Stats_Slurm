@@ -1,0 +1,198 @@
+farnarkle|root|root|root|843762|151
+farnarkle|chowlett|Cullan Howlett|oz074|409147|392169590
+farnarkle|jgonzale|Jean-Francois Gonzalez|oz015|369007|114436843
+farnarkle|lrossi|Luca Rossi|oz003|350611|306344517
+farnarkle|jcalcino|Josh Calcino|oz015|340484|82800492
+farnarkle|dweight|David William Weight|oz016|278111|2416625368
+farnarkle|cpinte|Christophe Pinte|oz015|270975|70173807
+farnarkle|yqiu|Yisheng Qiu|oz013|265279|153890659
+farnarkle|qchu|Qi Chu|oz016|185178|518994234
+farnarkle|mhuebner|Moritz Thomas Huebner|oz006|177445|2449613251
+farnarkle|smutch|Simon Mutch|oz013|172543|70363336
+farnarkle|khirsh|Kieran Hirsh|oz015|146405|78011537
+farnarkle|jleontin|Justin Leontini|oz057|144059|392311670
+farnarkle|jbosveld|Joel Bosveld|oz016|135060|1048611530
+farnarkle|dostler|David Ostler|oz050|126479|208846776
+farnarkle|mwilczyn|Mike Wilczynska|oz123|115596|802470450
+farnarkle|cadams|Caitlin Adams|oz073|112574|33998802
+farnarkle|apoci|Adriano Poci|oz059|111235|364027384
+farnarkle|nhossein|Negar mohammadhosseini|oz057|109827|24173668
+farnarkle|dliptai|David Liptai|oz015|108334|44848589
+farnarkle|fhernand|Francisco Javier Hernandez Vivanco|oz006|107379|247711093
+farnarkle|rruggeri|rossana ruggeri|oz073|94890|458579223
+farnarkle|xchen|Xiaolong CHEN|oz105|93567|912078196
+farnarkle|lmaffiol|Luca Maffioli|oz051|90591|641318315
+farnarkle|sschiffe|Sebastian Schiffer|oz105|81930|26866417
+farnarkle|mberchon|Maeva Marine Berchon|oz015|69890|36091396
+farnarkle|dbollen|Dylan Bollen|oz061|69634|13560620
+farnarkle|dreardon|Daniel Reardon|oz002|64671|56173177
+farnarkle|szhu|Shuang Jie Zhu|oz065|62455|33074303
+farnarkle|rsmith|Rory Smith|oz006|61303|202485563
+farnarkle|jpowell|Jade Powell|oz021|56509|23767421
+farnarkle|acodorea|Alexandru Codoreanu|oz077|54616|263481190
+farnarkle|rsadus|Richard Sadus|oz110|52740|52881642
+farnarkle|lbakels|Lucie Bakels|oz009|45645|92445656
+farnarkle|fnelli|Filippo Nelli|oz060|41767|11679143
+farnarkle|adix|Andrew James Dix|oz026|40880|19450488
+farnarkle|cperry|Conrad Perry|oz076|39481|34595349
+farnarkle|rhumble|Robin Humble|hpcadmin|36585|189658
+farnarkle|tvenvill|Thomas Venville|oz027|35079|268190704
+farnarkle|evelden|Ellert van der Velden|oz071|34395|13228042
+farnarkle|kng|King Lun Ng|oz029|33282|49529655
+farnarkle|rhumble|Robin Humble|oz997|32704|0
+farnarkle|cjin|Chen Jin|oz019|29147|7530099
+farnarkle|rhumble|Robin Humble|testers|29043|0
+farnarkle|aarnold|Anthony David Arnold|oz014|28714|3280577
+farnarkle|nbarry|Nichole Barry|oz048|27090|27367448
+farnarkle|bmueller|Bernhard Mueller|oz011|23060|10759487
+farnarkle|epayne|Ethan Payne|oz006|20979|60123758
+farnarkle|bgonchar|Boris Goncharov|oz031|17273|293202175
+farnarkle|wli|Weibai Li|oz032|17197|11035283
+farnarkle|cpower|Chris Power|oz009|16386|24971750
+farnarkle|gashton|Greg Ashton|oz006|14947|21859852
+farnarkle|pclearwa|Patrick Clearwater|oz022|12800|75089732
+farnarkle|cjacob|Chinthaka Ravinatha Jacob|oz057|12710|7069178
+farnarkle|rseikel|Ray Seikel|oz114|12259|8386825
+farnarkle|ayoung|Andrew Young|oz057|10413|10496655
+farnarkle|pagrawal|Poojan Agrawal|oz003|9999|17367967
+farnarkle|rpoulton|Rhys Jordan James Poulton|oz009|9445|1905830
+farnarkle|eiodice|Enrichetta Iodice|oz037|9198|6178512
+farnarkle|bzhang|Boyu Zhang|oz019|8993|20654782
+farnarkle|fmeng|Fei Meng|oz032|8793|2602230
+farnarkle|hbaumgar|Holger Baumgardt|oz014|7960|1244808
+farnarkle|taoadmin|TAOAdmin TAOAdmin|oz114|7644|3707092
+farnarkle|udeiters|Ulrich Deiters|oz110|7565|27212212
+farnarkle|xzhu|Xingjiangi Zhu|oz008|7533|28062964
+farnarkle|rdevita|Ruggero de Vita|oz038|7383|7362300
+farnarkle|jdavies|James Davies|oz013|7301|885474
+farnarkle|sjayarat|Sameera Jayaratna|oz019|6707|1431531
+farnarkle|fhabib|Fatah Nasih Habib|oz032|6582|4692631
+farnarkle|klogakan|Krishna Prasath Logakannan|oz032|6217|1861703
+farnarkle|mkovalam|Manoj Kovalam|oz016|6025|10956320
+farnarkle|abittner|Adrian Bittner|oz037|5348|1077432
+farnarkle|mliu|Mao Liu|oz032|4884|742306
+farnarkle|mrahimi|Mahsa Rahimi|oz048|4836|7125533
+farnarkle|mlower|Marcus Edward Lower|oz006|4825|23610745
+farnarkle|ctalbot|Colm Talbot|oz006|4693|14234290
+farnarkle|fxia|Fukun Xia|oz032|4551|951263
+farnarkle|rteh|Run Yan Teh|oz029|4230|11817631
+farnarkle|spointon|Stephanie Pointon|oz089|4174|338584
+farnarkle|mle|My Van Le|oz057|4018|8540196
+farnarkle|mcaleb|Manisha Caleb|oz002|3848|29232467
+farnarkle|aalomara|Amer Ghazi Alomarah|oz032|3581|7969179
+farnarkle|jhurley|Jarrod Hurley|oz003|3562|59879
+farnarkle|apoci|Adriano Poci|oz037|3508|4309953
+farnarkle|kfedorch|Khelina Fedorchuk|oz053|3315|2353772
+farnarkle|jhurley|Jarrod Hurley|oz990|3035|0
+farnarkle|msinha|Manodeep Sinha|oz004|2941|3218937
+farnarkle|jzhou|Jing Zhou|oz105|2878|1157010
+farnarkle|asreekum|Anala Kavumkandathil Sreekumar|oz016|2597|14132386
+farnarkle|swebb|Sara Webb|oz100|2571|16743810
+farnarkle|kprasad|Krishnamurthy Prasad|oz062|2405|10927271
+farnarkle|pkumar|Pravir Kumar|oz002|2326|112013
+farnarkle|spetrie|Steve Petrie|oz077|2142|3281084
+farnarkle|ahutter|Anne Hutter|oz004|2141|690570
+farnarkle|jlewis|James Lewis|oz089|2121|12622933
+farnarkle|xxiang|Xinmei Xiang|oz032|1909|176365
+farnarkle|clee|Chung-Chi Lee|oz123|1906|959422
+farnarkle|jline|Jack Line|oz048|1855|483142
+farnarkle|syoshiur|Shintaro Yoshiura|oz048|1789|1592248
+farnarkle|mmogeke|Mark Mogeke|oz082|1783|50083
+farnarkle|ptsai|Pei-Wei Tsai|oz024|1772|3783468
+farnarkle|rmarra|Rachel Marra|oz089|1575|518776
+farnarkle|msampson|Matthew Sampson|oz003|1552|2283641
+farnarkle|debatri|Debatri Chattopadhyay|oz003|1440|1740109
+farnarkle|dmendonc|Dom Mendonca|oz048|1286|35701
+farnarkle|cblake|Chris Blake|oz073|1285|1548417
+farnarkle|jdesvign|Jean-Francois Desvignes|oz077|1278|506492
+farnarkle|ktse|Kwong Ming Tse|oz032|1236|1300390
+farnarkle|plasky|Paul Lasky|oz006|1231|2719130
+farnarkle|mcdermid|Richard McDermid|oz037|1172|3549203
+farnarkle|hchan|Ho Man CHAN|oz057|1104|1218335
+farnarkle|nha|NGOC SAN HA|oz032|1052|297721
+farnarkle|qngo|Quoc Cuong Ngo|oz036|1012|3160804
+farnarkle|aparthas|Aditya Parthasarathi|oz002|989|1055147
+farnarkle|cjacobs|Colin Jacobs|oz012|947|825971
+farnarkle|idrpic|Ivana Drpic|oz990|942|343639
+farnarkle|bekiaris|Georgios Bekiaris|oz075|927|81743
+farnarkle|jwang|Jia Wang|oz105|872|762266
+farnarkle|vstimpel|Vanessa Stimpel|oz047|843|3533110
+farnarkle|mwang|Meng Wang|oz032|800|71421
+farnarkle|sgalauda|Shanika Galaudage|oz020|794|316845
+farnarkle|ldo|Loan Do|oz023|707|1770993
+farnarkle|balves|Bruno Alves|oz071|677|9847873
+farnarkle|jlosey|James Losey|oz110|670|60089
+farnarkle|ssweet|Sarah Sweet|oz136|628|72803
+farnarkle|rdzudzar|Robert Dzudzar|oz042|585|479185
+farnarkle|whong|Wei Hong|hpcadmin|552|908310
+farnarkle|lakerink|Lewis Lakerink|testers|529|2628
+farnarkle|lakerink|Lewis Lakerink|hpcadmin|497|2
+farnarkle|lakerink|Lewis Lakerink|oz049|497|0
+farnarkle|lakerink|Lewis Lakerink|oz114|497|0
+farnarkle|lakerink|Lewis Lakerink|oz997|497|0
+farnarkle|lakerink|Lewis Lakerink|oz999|497|0
+farnarkle|lakerink|Lewis Lakerink|oz003|497|0
+farnarkle|sforsaye|Simon Forsayeth|hpcadmin|497|0
+farnarkle|whong|Wei Hong|oz998|497|0
+farnarkle|sstevens|Simon Paul Stevenson|oz003|485|2407838
+farnarkle|smutch|Simon Mutch|oz087|470|24724
+farnarkle|vmorello|Vincent Morello|oz002|456|16238
+farnarkle|probert|Paul Frederic Robert|oz044|400|7152
+farnarkle|wchen|Wei Chen|oz032|388|53869
+farnarkle|jvander|Jacob Vander Vliet|oz089|381|180789
+farnarkle|mmarshal|Madeline Marshall|oz013|371|18993
+farnarkle|soslowsk|Stefan Oslowski|oz002|351|106163
+farnarkle|vgupta|VIVEK GUPTA|oz002|337|1647253
+farnarkle|glawrenc|Grace Lawrence|oz071|329|829968
+farnarkle|jseiler|Jacob Seiler|oz004|321|135933
+farnarkle|jshepher|Joanna Shepherd|oz003|294|38367
+farnarkle|rspiewak|Renee Spiewak|oz002|293|1348099
+farnarkle|dtriani|Dian Puspita Triani|oz070|234|190145
+farnarkle|dmentipl|Daniel Mentiplay|oz015|213|11542
+farnarkle|bpindor|Bart Pindor|oz048|189|273605
+farnarkle|huxiao|Huangfei Xiao|oz042|183|144609
+farnarkle|arogers|Axl Rogers|oz002|179|52417
+farnarkle|bilby|Bill Ilby|oz006|172|116325
+farnarkle|wfarah|Wael Farah|oz002|155|131611
+farnarkle|abatten|Adam John Batten|oz009|151|10367
+farnarkle|shegarty|Sarah Hegarty|oz100|149|794113
+farnarkle|xhuang|Xiaodong Huang|oz032|148|210348
+farnarkle|pulsar|P Ulsar|oz002|147|30156
+farnarkle|pelahi|Pascal Elahi|oz009|132|272919
+farnarkle|mkhattab|Muhammad Khattab|oz093|120|109806
+farnarkle|jcameron|Jacob Peter Cameron|oz016|118|167256
+farnarkle|vvenkatr|Vivek Venkatraman Krishnan|oz002|116|5854
+farnarkle|mgeyer|Marisa Geyer|oz002|107|1143392
+farnarkle|pmeyers|Patrick Michael Meyers|oz022|84|12277
+farnarkle|cmuruges|Chandrashekar Murugeshan|oz042|80|28433
+farnarkle|jesdaile|James Esdaile|oz041|74|52391
+farnarkle|clau|Caleb Lau|oz042|65|17719
+farnarkle|bopanchu|Bogdan Opanchuk|oz029|61|177527
+farnarkle|xiliu|Xiaolin Liu|oz016|50|343697
+farnarkle|jinzhang|Jin Zhang|oz991|46|1025
+farnarkle|rsengar|Rahul Sengar|oz002|42|16110
+farnarkle|hxiao|Hongwang Xiao|oz064|36|24225
+farnarkle|rpolking|Rodney Polkinghorne|oz029|33|589
+farnarkle|iandreon|Igor Andreoni|oz100|32|10629
+farnarkle|tnagar|Tushar Nagar|oz006|18|22623
+farnarkle|ctrott|Cathryn Trott|oz048|16|544
+farnarkle|ssalehee|Shibli Saleheen|oz114|15|25
+farnarkle|iromero|Isobel Marguarethe Romero-Shaw|oz006|15|33630
+farnarkle|fstars|Frank Stars|oz100|12|1119
+farnarkle|csamuel|Christopher Samuel|hpcadmin|12|7387
+farnarkle|jwillis|James Willis|oz009|6|49
+farnarkle|magnew|Matthew Agnew|oz115|6|1558
+farnarkle|esia|Edwin Sien Aun Sia|oz018|6|103
+farnarkle|hmiddlet|Hannah Middleton|oz022|4|13324
+farnarkle|aferre|Anna Ferre-Mateu|oz040|3|1266
+farnarkle|tvenvill|Thomas Venville|oz002|2|17
+farnarkle|gbkfit|George BK Fit|oz075|2|3501
+farnarkle|clagos|Claudia Lagos|oz009|2|1564
+farnarkle|msmith|Matthew Ross Smith|oz049|1|202
+farnarkle|sbuchner|Sarah Jane Buchner|oz002|0|154
+farnarkle|johnwebb|John Webb|oz123|0|50
+farnarkle|ajameson|Andrew Jameson|testers|0|61
+farnarkle|ahartoyo|Agus Hartoyo|oz053|0|14
+farnarkle|rkochand|Raji Kochandra|oz110|0|1
+farnarkle|smeka|Shiv Akarsh Meka|oz989|0|4
+farnarkle|wvanstra|Willem Van Straten|oz002|0|1

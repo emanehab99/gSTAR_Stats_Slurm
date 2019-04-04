@@ -40,9 +40,9 @@ if __name__=='__main__':
     #
     # print(data['Account'])
 
-    filename = 'files/user_utilisation_2018_q3.txt'
-    startdate = '2018-07-01'
-    enddate = '2018-09-30'
+    filename = 'files/user_utilisation_2019_q1.txt'
+    startdate = '2019-01-01'
+    enddate = '2019-03-31'
 
     data = pd.read_csv(filename, sep="|", header=None)
     data.columns = ['Cluster', 'Login', 'Name', 'Account', 'Used', 'Energy']
@@ -75,7 +75,7 @@ if __name__=='__main__':
         # print(myreport.getSlurmUsageByDemographic())
 
         ReportFormat().generateSlurmReport(Report(dbconfig, startdate, enddate, type='slurm', slurmdata=data),
-                                           TAOreport(dbconfig, datetime.date(2018, 7, 1), datetime.date(2018, 9, 30)))
+                                           TAOreport(dbconfig, datetime.date(2019, 1, 1), datetime.date(2019, 3, 31)))
 
     except Exception as exp:
         raise exp

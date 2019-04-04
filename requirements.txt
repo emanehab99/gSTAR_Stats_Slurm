@@ -1,5 +1,5 @@
 pylatex==1.2.1
-mysql-connector==2.1.6
+mysql-connector==2.1.7
 psycopg2==2.7.3.1
 
 

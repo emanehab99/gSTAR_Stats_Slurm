@@ -374,3 +374,6 @@ venv.bak/
 
 .tex
 .txt
+/config/config.ini
+/config/db_config.ini
+/files/*

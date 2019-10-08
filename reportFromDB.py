@@ -125,6 +125,7 @@ class Report(object):
         # gSTAR stats MySQL DB entry in dbconfig
 
         mysqldb = dbconfig['mysql']
+        print(mysqldb)
         self.con = mysql.connector.connect(**mysqldb)
         self.cursor = self.con.cursor()
         print('connected to DB')

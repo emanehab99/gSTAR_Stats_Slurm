@@ -14,7 +14,6 @@ Usage:
 
 import sys
 import datetime
-
 from pylatex import Document, Section, Subsection, LongTabu, Command
 from pylatex.utils import bold, NoEscape
 

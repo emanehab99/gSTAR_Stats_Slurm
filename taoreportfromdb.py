@@ -37,9 +37,6 @@ class TAOreport:
             self.startdate = startdate
             self.enddate = enddate
 
-            print(startdate)
-            print(enddate)
-
             print('Connected')
 
 
@@ -319,8 +316,7 @@ class TAO5Report:
         data = None
         df_list = [pd.read_table(f) for f in files]
         data = pd.concat(df_list)
-        print(data)
-        print(data.columns)
+
         return data
 
     def getnoofjobs(self):
@@ -328,12 +324,11 @@ class TAO5Report:
 
     def getregisteredusers(self):
         select_registeredusers = (
-            "SELECT count(*) FROM TAO.tao_taouser "
+            "SELECT count(*) FROM tao_taouser "
             "WHERE username NOT IN (%s) "
 
         )
         select_registeredusers = select_registeredusers % self.adminusers
-        print(select_registeredusers)
         self.mysqlcursor.execute(select_registeredusers)
 
         users = 0
@@ -346,17 +341,26 @@ class TAO5Report:
         return len(self.stats.email.unique())
 
     def getdatasize(self):
-        total_records = 0
+
+        job_ids = self.stats.id.unique().tolist()
+        select_total_records = (
+                                "select sum(num_records) from tao_job "
+                                "where hpcjob_ptr_id in (%s)"
+                               )
+
+        format_strings = ','.join(['%s'] * len(job_ids))
+        self.mysqlcursor.execute(select_total_records % format_strings, tuple(job_ids))
+
+        total_records = self.mysqlcursor.fetchone()[0]
         datasize = f'{round(self.stats.output_size.sum()/(1024.0 * 1024), 3)} GB'
 
+        total_records = "{:,}".format(total_records)
         return (datasize, total_records)
 
     def getjobsbydatabase(self):
         databasejobs = dict()
         grouped_jobs = self.stats.groupby(by='database')
-        print(grouped_jobs)
         for database, jobs in grouped_jobs:
-            # print(f'database: {database}', len(jobs))
             if database != '':      #discard jobs without database
                 # Multidark dataset
                 if 'multidark' in database:

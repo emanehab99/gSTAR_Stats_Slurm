@@ -181,8 +181,8 @@ class ReportFormat(object):
 
         accounts_data.append(("Registered users", taoreport.getregisteredusers()))
 
-        accounts_data.append(("Page views (Google analytics)", ""))
-        accounts_data.append(("Unique users (Google analytics)", ""))
+        # accounts_data.append(("Page views (Google analytics)", ""))
+        # accounts_data.append(("Unique users (Google analytics)", ""))
 
         self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
@@ -196,17 +196,17 @@ class ReportFormat(object):
 
         self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
-        print("TAO site access by location from Google analytics ...")
-        sectiontitle = "TAO site access by location from Google analytics ({0} to {1})".format(
-            taoreport.startdate.strftime("%d/%m/%Y"),
-            taoreport.enddate.strftime("%d/%m/%Y"))
-        self.doc.append(Subsection(sectiontitle))
+        # print("TAO site access by location from Google analytics ...")
+        # sectiontitle = "TAO site access by location from Google analytics ({0} to {1})".format(
+        #     taoreport.startdate.strftime("%d/%m/%Y"),
+        #     taoreport.enddate.strftime("%d/%m/%Y"))
+        # self.doc.append(Subsection(sectiontitle))
 
-        accounts_data = []
-        accounts_data.append(("Australia", ""))
-        accounts_data.append(("USA", ""))
+        # accounts_data = []
+        # accounts_data.append(("Australia", ""))
+        # accounts_data.append(("USA", ""))
 
-        self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
+        # self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
     def generateSlurmReport(self, report, taoreport=None):
         try:

@@ -3,16 +3,17 @@
 """
 import mysql.connector
 import pandas as pd
+import openpyxl
 
 FEMALE = 1
 MALE = 0
 ASTRONOMY = 1
 STUDENT = 1
 
-GENDER = {2: "None", 1:"Female", 0:"Male"}
-IS_ASTRONOMY = {1: "Astronomy", 0:"Non-astronomy"}
-IS_STUDENT = {1:"Student", 0: "Staff"}
-IS_AUSTRALIA = {'AU':"National Astronomy", '': "Other"}
+GENDER = {2: "None", 1: "Female", 0: "Male"}
+IS_ASTRONOMY = {1: "Astronomy", 0: "Non-astronomy"}
+IS_STUDENT = {1: "Student", 0: "Staff"}
+IS_AUSTRALIA = {'AU': "National Astronomy", '': "Other"}
 
 
 class Project(object):
@@ -33,6 +34,7 @@ class Project(object):
         """
         return "{0:5s} {1:8s} {2:3s} {3:100s} {4:100}".format(self.code, self.type, str(self.is_astronomy) if self.is_astronomy is not None else '-', self.name, self.admin_email)
 
+
 class User(object):
 
     def __init__(self, user_data):
@@ -47,7 +49,6 @@ class User(object):
         country = '' if user_data[7] != 'AU' else 'AU'
         self.is_australia = IS_AUSTRALIA[country]
         self.usage = user_data[8]
-
 
     def __str__(self):
         """
@@ -69,11 +70,11 @@ class User(object):
 class SlurmUser(object):
 
     def __init__(self, user_data):
-        '''
+        """
         creates a User object using data from database represented in a tuple
         :param user_data: Tuple contains user raw data from database
             (firstname, lastname, username, gender, is_student, is_astronomy, institution, country)
-        '''
+        """
         self.name = user_data[0] + " " + user_data[1]
         self.username = user_data[2]
         self.gender = GENDER[user_data[3]]
@@ -85,7 +86,6 @@ class SlurmUser(object):
         country = '' if user_data[7] != 'AU' else 'AU'
         self.is_australia = IS_AUSTRALIA[country]
         self.usage = 0
-
 
     def __str__(self):
         """
@@ -102,6 +102,26 @@ class SlurmUser(object):
             return self
         else:
             return self.__add__(other)
+
+class GenericUser(object):
+    def __init__(self, user_data):
+        """
+        creates a User object using data from database represented in a tuple
+        :param user_data: Tuple contains user raw data from database
+            (firstname, lastname, username, email, department, institution)
+        """
+        self.name = user_data[0] + " " + user_data[1]
+        self.username = user_data[2]
+        self.email = user_data[3]
+        self.department = user_data[4]
+        self.institution = user_data[5]
+
+    def __str__(self):
+        """
+        Formats Project object as string to be printed
+        :return: formatted string of project attributes
+        """
+        return "{0:50} {1:15} {2} ".format(self.name, self.username)
 
 
 class Report(object):
@@ -125,7 +145,7 @@ class Report(object):
         # gSTAR stats MySQL DB entry in dbconfig
 
         mysqldb = dbconfig['mysql']
-        print(mysqldb)
+        # print(mysqldb)
         self.con = mysql.connector.connect(**mysqldb)
         self.cursor = self.con.cursor()
         print('connected to DB')
@@ -717,17 +737,30 @@ class Report(object):
 
         users = dict()
         self.cursor.execute(select_userusage)
+        # count = 0
+        # duplicate_count = 0
         for userdata in self.cursor:
+            # count += 1
             u = SlurmUser(userdata)
             u.usage = userusage[u.username] if u.username in userusage.keys() else 0
+            # if u.username in users.keys():
+            #     duplicate_count += 1
+            #     print(f'{u.username} is duplicate')
             users[u.username] = u.__dict__
+
+        # print(f"count: {count}, duplicates: {duplicate_count}")
+        # print(f"No of distinct users: {len(users)}")
+
+        # not_existing = [x for x in self.slurmdata['Login'] if x not in users]
+        # print(f'missing: {not_existing}')
 
         users_df = pd.DataFrame.from_dict(data=users, orient='index')
 
         # Dictionary of (demographic criteria, list of groups and usages)
         demographic = {}
         # Percentage of usage based on gender; Male and Female totals
-        demographic["gender"] = self.getGroupUsage(users_df[users_df.gender.isin([GENDER[MALE],GENDER[FEMALE]])], "gender")
+        demographic["gender"] = self.getGroupUsage(
+            users_df[users_df.gender.isin([GENDER[MALE], GENDER[FEMALE]])], "gender")
         # Percentage of usage based on is_student; Staff and Student totals
         demographic["student"] = self.getGroupUsage(users_df, "student")
         # Percentage of usage based on is_astronomy; Astronomy and Non-astronomy totals
@@ -745,8 +778,8 @@ class Report(object):
         :return: List of groups and corresponding usage totals
         """
 
-
         groupusage = round(usersusage.groupby(by=filter).usage.sum() * 100.0 / self.totalusage, 2)
+        # print(f"Usage from users df: {usersusage.usage.sum()}, usage from slurm data: {self.totalusage}")
         # print(groupusage)
 
         return groupusage
@@ -841,9 +874,56 @@ class Report(object):
 
         return result
 
+class UserInfoReport(object):
 
+    def __init__(self, dbconfig, users=None):
 
+        """
+        :param dbconfig: a dictionary of dictionaries, all database configurations
+        :param users:
+        """
+        # connect to database schema using dbconfig dictionary
+        # gSTAR stats MySQL DB entry in dbconfig
 
+        mysqldb = dbconfig['mysql']
+        # print(mysqldb)
+        self.con = mysql.connector.connect(**mysqldb)
+        self.cursor = self.con.cursor()
+        print('connected to DB')
+
+        self.users = users
+
+    def finalize(self):
+        # closing connection and cursor
+        self.cursor.close()
+        self.con.close()
+
+        print("Resources released successfully")
+        print('Report generated successfully')
+
+    def get_users_info(self):
+
+        print("Getting users information")
+        select_usersinfo = (
+            "SELECT distinct gum_user.first_name first, gum_user.last_name last, gum_user.username username, "
+            "gum_user.email email, gum_department.name department, gum_institution.name institution "
+            "FROM hpc_portal.gum_user "
+            "INNER JOIN gum_userdepartment ON gum_user.id = gum_userdepartment.user_id "
+            "INNER JOIN gum_department ON gum_department.id = gum_userdepartment.department_id " 
+            "INNER JOIN gum_institution ON gum_institution.id = gum_department.institution_id "
+        )
+
+        usersInfo = dict()
+        self.cursor.execute(select_usersinfo)
+        for userdata in self.cursor:
+            if userdata[2] in self.users['username'].unique():
+                u = GenericUser(userdata)
+                usersInfo[u.username] = u.__dict__
+
+        users_df = pd.DataFrame.from_dict(data=usersInfo, orient='index')
+        users_df.to_excel('users.xlsx')
+
+        return users_df
 
 
 

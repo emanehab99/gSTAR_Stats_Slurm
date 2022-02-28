@@ -40,9 +40,9 @@ if __name__=='__main__':
     #
     # print(data['Account'])
 
-    filename = 'files/user_utilisation_2019_q3.txt'
-    startdate = '2019-07-01'
-    enddate = '2019-09-30'
+    filename = 'files/user_utilisation_2021_q4.txt'
+    startdate = '2021-10-01'
+    enddate = '2021-12-31'
 
     data = pd.read_csv(filename, sep="|", header=None)
     data.columns = ['Cluster', 'Login', 'Name', 'Account', 'Used', 'Energy']
@@ -78,8 +78,11 @@ if __name__=='__main__':
         #                                    TAOreport(dbconfig, datetime.date(2019, 1, 1), datetime.date(2019, 3, 31)))
 
 
+        # ReportFormat().generateSlurmReport(Report(dbconfig, startdate, enddate, type='slurm', slurmdata=data),
+        # TAO5Report(dbconfig, datetime.date(2019, 7, 1), datetime.date(2019, 9, 30), ['files/report_FY1920_Q1_NCI.txt', 'files/report_FY1920_Q1_OZSTAR.txt']))
+
         ReportFormat().generateSlurmReport(Report(dbconfig, startdate, enddate, type='slurm', slurmdata=data),
-        TAO5Report(dbconfig, datetime.date(2019, 7, 1), datetime.date(2019, 9, 30), ['files/report_FY1920_Q1_NCI.txt', 'files/report_FY1920_Q1_OZSTAR.txt']))
+                                           None)
 
     except Exception as exp:
         raise exp

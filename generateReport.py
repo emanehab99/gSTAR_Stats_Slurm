@@ -14,7 +14,6 @@ Usage:
 
 import sys
 import datetime
-
 from pylatex import Document, Section, Subsection, LongTabu, Command
 from pylatex.utils import bold, NoEscape
 
@@ -45,7 +44,7 @@ class ReportFormat(object):
             raise exp
 
 
-    def generateReport(self, report, taoreport):
+    def generateReport(self, report, taoreport=None):
         try:
             myfilename = "latex_files/" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
@@ -106,48 +105,50 @@ class ReportFormat(object):
             self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
             #-----------------------TAO Stats---------------------------------------------------
-            # Start a new page for TAO Stats
-            self.doc.append(NoEscape(r"\newpage"))
-            self.doc.append(Section("TAO Usage Statistics"))
 
-            print("Extracting General TAO Usage ...")
-            sectiontitle = "General TAO Usage (total for {0} to {1})".format(taoreport.startdate.strftime("%d/%m/%Y"), taoreport.enddate.strftime("%d/%m/%Y"))
-            self.doc.append(Subsection(sectiontitle))
-            accounts_data = []
-            accounts_data.append(("Number of jobs", taoreport.getnoofjobs()))
-            accounts_data.append(("Number of active users", taoreport.getactiveusers()))
+            if taoreport is not None:
+                # Start a new page for TAO Stats
+                self.doc.append(NoEscape(r"\newpage"))
+                self.doc.append(Section("TAO Usage Statistics"))
 
-            datasize = taoreport.getdatasize()
+                print("Extracting General TAO Usage ...")
+                sectiontitle = "General TAO Usage (total for {0} to {1})".format(taoreport.startdate.strftime("%d/%m/%Y"), taoreport.enddate.strftime("%d/%m/%Y"))
+                self.doc.append(Subsection(sectiontitle))
+                accounts_data = []
+                accounts_data.append(("Number of jobs", taoreport.getnoofjobs()))
+                accounts_data.append(("Number of active users", taoreport.getactiveusers()))
 
-            accounts_data.append(("Total records returned", datasize[1]))
-            accounts_data.append(("Total data-size returned", datasize[0]))
+                datasize = taoreport.getdatasize()
 
-            accounts_data.append(("Registered users", taoreport.getregisteredusers()))
+                accounts_data.append(("Total records returned", datasize[1]))
+                accounts_data.append(("Total data-size returned", datasize[0]))
 
-            accounts_data.append(("Page views (Google analytics)", ""))
-            accounts_data.append(("Unique users (Google analytics)", ""))
+                accounts_data.append(("Registered users", taoreport.getregisteredusers()))
 
-            self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
+                accounts_data.append(("Page views (Google analytics)", ""))
+                accounts_data.append(("Unique users (Google analytics)", ""))
 
-            print("Extracting Data access breakdown per database ...")
-            sectiontitle = "General Data access breakdown per database ({0} to {1})".format(taoreport.startdate.strftime("%d/%m/%Y"), taoreport.enddate.strftime("%d/%m/%Y"))
-            self.doc.append(Subsection(sectiontitle))
+                self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
-            databasejobs = taoreport.getjobsbydatabase()
-            accounts_data = databasejobs.items()
+                print("Extracting Data access breakdown per database ...")
+                sectiontitle = "General Data access breakdown per database ({0} to {1})".format(taoreport.startdate.strftime("%d/%m/%Y"), taoreport.enddate.strftime("%d/%m/%Y"))
+                self.doc.append(Subsection(sectiontitle))
 
-            self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
+                databasejobs = taoreport.getjobsbydatabase()
+                accounts_data = databasejobs.items()
 
-            print("TAO site access by location from Google analytics ...")
-            sectiontitle = "TAO site access by location from Google analytics ({0} to {1})".format(taoreport.startdate.strftime("%d/%m/%Y"),
-                                                                                            taoreport.enddate.strftime("%d/%m/%Y"))
-            self.doc.append(Subsection(sectiontitle))
+                self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
-            accounts_data = []
-            accounts_data.append(("Australia", ""))
-            accounts_data.append(("USA", ""))
+                print("TAO site access by location from Google analytics ...")
+                sectiontitle = "TAO site access by location from Google analytics ({0} to {1})".format(taoreport.startdate.strftime("%d/%m/%Y"),
+                                                                                                taoreport.enddate.strftime("%d/%m/%Y"))
+                self.doc.append(Subsection(sectiontitle))
 
-            self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
+                accounts_data = []
+                accounts_data.append(("Australia", ""))
+                accounts_data.append(("USA", ""))
+
+                self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
             # Generating PDF file
             self.doc.generate_pdf(myfilename, clean_tex=False)
@@ -156,7 +157,8 @@ class ReportFormat(object):
             raise exp
         finally:
             report.finalize()
-            taoreport.finalize()
+            if taoreport is not None:
+                taoreport.finalize()
 
     def addTAOStats(self, taoreport):
         # -----------------------TAO Stats---------------------------------------------------
@@ -179,8 +181,8 @@ class ReportFormat(object):
 
         accounts_data.append(("Registered users", taoreport.getregisteredusers()))
 
-        accounts_data.append(("Page views (Google analytics)", ""))
-        accounts_data.append(("Unique users (Google analytics)", ""))
+        # accounts_data.append(("Page views (Google analytics)", ""))
+        # accounts_data.append(("Unique users (Google analytics)", ""))
 
         self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
@@ -194,19 +196,19 @@ class ReportFormat(object):
 
         self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
-        print("TAO site access by location from Google analytics ...")
-        sectiontitle = "TAO site access by location from Google analytics ({0} to {1})".format(
-            taoreport.startdate.strftime("%d/%m/%Y"),
-            taoreport.enddate.strftime("%d/%m/%Y"))
-        self.doc.append(Subsection(sectiontitle))
+        # print("TAO site access by location from Google analytics ...")
+        # sectiontitle = "TAO site access by location from Google analytics ({0} to {1})".format(
+        #     taoreport.startdate.strftime("%d/%m/%Y"),
+        #     taoreport.enddate.strftime("%d/%m/%Y"))
+        # self.doc.append(Subsection(sectiontitle))
 
-        accounts_data = []
-        accounts_data.append(("Australia", ""))
-        accounts_data.append(("USA", ""))
+        # accounts_data = []
+        # accounts_data.append(("Australia", ""))
+        # accounts_data.append(("USA", ""))
 
-        self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
+        # self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
-    def generateSlurmReport(self, report, taoreport):
+    def generateSlurmReport(self, report, taoreport=None):
         try:
             myfilename = "latex_files/" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
@@ -268,7 +270,8 @@ class ReportFormat(object):
             self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
 
             # ######## TAO STATS
-            self.addTAOStats(taoreport)
+            if taoreport is not None:
+                self.addTAOStats(taoreport)
 
             # Generating PDF file
             self.doc.generate_pdf(myfilename, clean_tex=False)
@@ -277,7 +280,8 @@ class ReportFormat(object):
             raise exp
         finally:
             report.finalize()
-            taoreport.finalize()
+            if taoreport is not None:
+                taoreport.finalize()
 
 
 

@@ -1,9 +1,11 @@
 import sys
 import datetime
+from builtins import Exception, len
+
 import pandas as pd
 
 from reportFromDB import Report
-from taoreportfromdb import TAOreport
+from taoreportfromdb import TAOreport, TAO5Report
 from statsConfig import readdbconfig
 
 from generateReport import ReportFormat
@@ -26,8 +28,6 @@ if __name__=='__main__':
     #     startdate = input('Enter start date (YYYY-mm-dd): ')
     #     enddate = input('Enter end date (YYYY-mm-dd): ')
 
-
-
     # print(filename)
 
     # print(len(text.splitlines()))
@@ -40,9 +40,9 @@ if __name__=='__main__':
     #
     # print(data['Account'])
 
-    filename = 'files/user_utilisation_2019_q1.txt'
-    startdate = '2019-01-01'
-    enddate = '2019-03-31'
+    filename = 'files/user_utilisation_2021_q4.txt'
+    startdate = '2021-10-01'
+    enddate = '2021-12-31'
 
     data = pd.read_csv(filename, sep="|", header=None)
     data.columns = ['Cluster', 'Login', 'Name', 'Account', 'Used', 'Energy']
@@ -74,13 +74,19 @@ if __name__=='__main__':
         # print(myreport.getSlurmInstitutionUsagePercent())
         # print(myreport.getSlurmUsageByDemographic())
 
+        # ReportFormat().generateSlurmReport(Report(dbconfig, startdate, enddate, type='slurm', slurmdata=data),
+        #                                    TAOreport(dbconfig, datetime.date(2019, 1, 1), datetime.date(2019, 3, 31)))
+
+
+        # ReportFormat().generateSlurmReport(Report(dbconfig, startdate, enddate, type='slurm', slurmdata=data),
+        # TAO5Report(dbconfig, datetime.date(2019, 7, 1), datetime.date(2019, 9, 30), ['files/report_FY1920_Q1_NCI.txt', 'files/report_FY1920_Q1_OZSTAR.txt']))
+
         ReportFormat().generateSlurmReport(Report(dbconfig, startdate, enddate, type='slurm', slurmdata=data),
-                                           TAOreport(dbconfig, datetime.date(2019, 1, 1), datetime.date(2019, 3, 31)))
+                                           None)
 
     except Exception as exp:
         raise exp
-    # finally:
-    #     myreport.finalize()
+
 
 
 

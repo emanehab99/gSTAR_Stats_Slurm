@@ -10,7 +10,7 @@ MALE = 0
 ASTRONOMY = 1
 STUDENT = 1
 
-GENDER = {2: "None", 1: "Female", 0: "Male"}
+# GENDER = {2: "None", 1: "Female", 0: "Male"}
 IS_ASTRONOMY = {1: "Astronomy", 0: "Non-astronomy"}
 IS_STUDENT = {1: "Student", 0: "Staff"}
 IS_AUSTRALIA = {'AU': "National Astronomy", '': "Other"}
@@ -40,7 +40,7 @@ class User(object):
     def __init__(self, user_data):
         self.name = user_data[0] + " " + user_data[1]
         self.username = user_data[2]
-        self.gender = GENDER[user_data[3]]
+        # self.gender = GENDER[user_data[3]]
 
         self.student = IS_STUDENT[user_data[4]]
         self.is_astronomy = IS_ASTRONOMY[user_data[5]]
@@ -77,13 +77,13 @@ class SlurmUser(object):
         """
         self.name = user_data[0] + " " + user_data[1]
         self.username = user_data[2]
-        self.gender = GENDER[user_data[3]]
+        # self.gender = GENDER[user_data[3]]
 
-        self.student = IS_STUDENT[user_data[4]]
-        self.is_astronomy = IS_ASTRONOMY[user_data[5]]
-        self.institution = user_data[6]
-        self.country = user_data[7]
-        country = '' if user_data[7] != 'AU' else 'AU'
+        self.student = IS_STUDENT[user_data[3]]
+        self.is_astronomy = IS_ASTRONOMY[user_data[4]]
+        self.institution = user_data[5]
+        self.country = user_data[6]
+        country = '' if user_data[6] != 'AU' else 'AU'
         self.is_australia = IS_AUSTRALIA[country]
         self.usage = 0
 
@@ -277,7 +277,9 @@ class Report(object):
         print("Getting users information")
         select_usersinfo = (
             "SELECT distinct gum_user.first_name first, gum_user.last_name last, gum_user.username username, "
-            "gum_user.gender, gum_user.is_student is_student, gum_department.is_astronomy is_astronomy, "
+            # "gum_user.gender, gum_user.is_student is_student, gum_department.is_astronomy is_astronomy, "
+            "gum_user.is_student is_student, gum_department.is_astronomy is_astronomy, "
+
             "gum_institution.name inst_name,  gum_institution.country country "
             "FROM gum_userdepartment "
             "INNER JOIN gum_department ON gum_userdepartment.department_id = gum_department.id "
@@ -508,12 +510,14 @@ class Report(object):
         :return:
         """
         select_userusage = (
-            "SELECT inst_users.first, inst_users.last, job_event.user, inst_users.gender, inst_users.is_student, inst_users.is_astronomy, "
+            # "SELECT inst_users.first, inst_users.last, job_event.user, inst_users.gender, inst_users.is_student, inst_users.is_astronomy, "
+            "SELECT inst_users.first, inst_users.last, job_event.user, inst_users.is_student, inst_users.is_astronomy, "
             "inst_users.inst_name, inst_users.country, round((sum(service_units)/ %s )*100,2) AS percentage "
             "FROM job_event INNER JOIN ( "
             "SELECT distinct gum_userdepartment.department_id, gum_institution.name inst_name,  gum_institution.country country, "
             "gum_department.name dept_name, gum_department.is_astronomy is_astronomy, gum_user.username username, "
-            "gum_user.gender, gum_user.is_student is_student, gum_userdepartment.start_date startd, gum_userdepartment.end_date endd, "
+            # "gum_user.gender, gum_user.is_student is_student, gum_userdepartment.start_date startd, gum_userdepartment.end_date endd, "
+            "gum_user.is_student is_student, gum_userdepartment.start_date startd, gum_userdepartment.end_date endd, "
             "gum_user.first_name first, gum_user.last_name last "
             "FROM gum_userdepartment "
             "INNER JOIN gum_department ON gum_userdepartment.department_id = gum_department.id "
@@ -521,7 +525,8 @@ class Report(object):
             "INNER JOIN gum_user ON gum_userdepartment.user_id = gum_user.id) as inst_users ON job_event.user = inst_users.username "
             "WHERE job_event.type='JOBEND' and DATE(time) BETWEEN DATE(%s) AND DATE(%s) "
             "AND job_event.time >= inst_users.startd AND ( job_event.time <= inst_users.endd OR inst_users.endd IS NULL) "
-            "GROUP BY inst_users.first, inst_users.last, job_event.user, inst_users.gender, inst_users.is_student, inst_users.is_astronomy, inst_users.inst_name, inst_users.country "
+            # "GROUP BY inst_users.first, inst_users.last, job_event.user, inst_users.gender, inst_users.is_student, inst_users.is_astronomy, inst_users.inst_name, inst_users.country "
+            "GROUP BY inst_users.first, inst_users.last, job_event.user, inst_users.is_student, inst_users.is_astronomy, inst_users.inst_name, inst_users.country "
             "ORDER BY percentage desc"
         )
 
@@ -533,7 +538,7 @@ class Report(object):
         # Dictionary of (demographic criteria, list of groups and usages)
         demographic = {}
         # Percentage of usage based on gender; Male and Female totals
-        demographic["gender"] = self.getFilteredUsage(users, "gender")
+        # demographic["gender"] = self.getFilteredUsage(users, "gender")
         # Percentage of usage based on is_student; Staff and Student totals
         demographic["student"] = self.getFilteredUsage(users, "student")
         # Percentage of usage based on is_astronomy; Astronomy and Non-astronomy totals
@@ -653,6 +658,25 @@ class Report(object):
 
         return projectusagelist
 
+    def getSlurmProjectUsage(self):
+        """
+        gets total project usage as well as the percentage
+        :return:
+        """
+        projectusagepercent = round(self.slurmdata.groupby(by='Account').Used.sum() * 100.0 / self.totalusage, 3)
+        projectusage = self.slurmdata.groupby(by='Account').Used.sum()
+        projectusagelist = []
+
+        select_ozstarprojects = "select code from gum_project where system_id = 2 and gum_project.code like 'oz%' order by code"
+        self.cursor.execute(select_ozstarprojects)
+
+        for project in self.cursor.fetchall():
+            percent = '{0}%'.format(projectusagepercent[project[0]]) if project[0] in projectusagepercent else '-'
+            usage = '{:,}'.format(projectusage[project[0]]) if project[0] in projectusage else '-'
+            projectusagelist.append((project[0], usage, percent))
+
+        return projectusagelist
+
     def getSlurmActiveSwinAstronomersCount(self):
         """
         Query the database for no of active astronomer users from Swinburne Uni, during the quarter
@@ -723,7 +747,8 @@ class Report(object):
 
         select_userusage = (
             "SELECT distinct gum_user.first_name first, gum_user.last_name last, gum_user.username username, "
-            "gum_user.gender, gum_user.is_student is_student, gum_department.is_astronomy is_astronomy, "
+            # "gum_user.gender, gum_user.is_student is_student, gum_department.is_astronomy is_astronomy, "
+            "gum_user.is_student is_student, gum_department.is_astronomy is_astronomy, "
             "gum_institution.name inst_name,  gum_institution.country country "
             "FROM gum_userdepartment "
             "INNER JOIN gum_department ON gum_userdepartment.department_id = gum_department.id "
@@ -759,8 +784,8 @@ class Report(object):
         # Dictionary of (demographic criteria, list of groups and usages)
         demographic = {}
         # Percentage of usage based on gender; Male and Female totals
-        demographic["gender"] = self.getGroupUsage(
-            users_df[users_df.gender.isin([GENDER[MALE], GENDER[FEMALE]])], "gender")
+        # demographic["gender"] = self.getGroupUsage(
+        #     users_df[users_df.gender.isin([GENDER[MALE], GENDER[FEMALE]])], "gender")
         # Percentage of usage based on is_student; Staff and Student totals
         demographic["student"] = self.getGroupUsage(users_df, "student")
         # Percentage of usage based on is_astronomy; Astronomy and Non-astronomy totals

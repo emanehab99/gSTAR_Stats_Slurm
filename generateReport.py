@@ -14,13 +14,11 @@ Usage:
 
 import sys
 import datetime
-from pylatex import Document, Section, Subsection, LongTabu, Command
+from pylatex import Document, Section, Subsection, LongTabu, LongTable, Command, Package
 from pylatex.utils import bold, NoEscape
 
 
 from reportFromDB import Report, MALE, FEMALE, ASTRONOMY, STUDENT
-from taoreportfromdb import TAOreport
-
 from statsConfig import readdbconfig
 
 
@@ -38,6 +36,7 @@ class ReportFormat(object):
 
             self.doc.append(NoEscape(r'\maketitle'))
             self.doc.append(NoEscape(r"\newpage"))
+            self.doc.packages.append(Package('longtable', {'=v4.13'}))
 
         except Exception as exp:
 
@@ -51,6 +50,7 @@ class ReportFormat(object):
             print("Extracting percentage of usage by institution ...")
             self.doc.append(Section("Usage by Institution "))
             self.formatTable(header=["Institution", "Usage"], indent="X[l] X[r]",
+            # self.formatTable(header=["Institution", "Usage"], indent="l r",
                              data=report.getInstitutionUsagePercent())
 
             print("Extracting astronomy account holders information...")
@@ -61,14 +61,14 @@ class ReportFormat(object):
 
             users = report.getUsersCount()
             activeusers = report.getActiveUsersCount()
-            astronomymales = report.getUsersCount([
-                ('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', MALE)])
-            activeastronomymales = report.getActiveUsersCount(
-                [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', MALE)])
-            astronomyfemales = report.getUsersCount(
-                [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', FEMALE)])
-            activeastronomyfemales = report.getActiveUsersCount(
-                [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', FEMALE)])
+            # astronomymales = report.getUsersCount([
+            #     ('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', MALE)])
+            # activeastronomymales = report.getActiveUsersCount(
+            #     [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', MALE)])
+            # astronomyfemales = report.getUsersCount(
+            #     [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', FEMALE)])
+            # activeastronomyfemales = report.getActiveUsersCount(
+            #     [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', FEMALE)])
             astronomystudents = report.getUsersCount(
                 [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.is_student', STUDENT)])
             activeastronomystudents = report.getActiveUsersCount(
@@ -77,21 +77,25 @@ class ReportFormat(object):
             activeswinastro = report.getActiveSwinAstronomersCount()
 
             accounts_data.append(("All", users, activeusers))
-            accounts_data.append(("Male", astronomymales, activeastronomymales))
-            accounts_data.append(("Female", astronomyfemales, activeastronomyfemales))
+            # accounts_data.append(("Male", astronomymales, activeastronomymales))
+            # accounts_data.append(("Female", astronomyfemales, activeastronomyfemales))
             accounts_data.append(("PhD Student", astronomystudents, activeastronomystudents))
             accounts_data.append(("Swinburne", swinastro, activeswinastro))
 
             self.formatTable(header=["", "Total", "Active"], indent="X[l] X[r] X[r]", data=accounts_data)
+            # self.formatTable(header=["", "Total", "Active"], indent="l r r", data=accounts_data)
+
 
             print("Extracting no of astronomy users in all institutions...")
             self.doc.append(Section("Institutions other than Swinburne with astronomy account holders"))
             self.formatTable(header=["Institution", "No of Users"], indent="X[l] X[r]",
+            # self.formatTable(header=["Institution", "No of Users"], indent="l r",
                              data=report.getInstitutionAstronomers())
 
             print("Extracting percentage of usage by project ...")
             self.doc.append(Section("Share of CPU hours usage by project"))
             self.formatTable(header=["Project", "Usage by CPU hours"], indent="X[l] X[r]",
+            # self.formatTable(header=["Project", "Usage by CPU hours"], indent="l r",
                              data=report.getProjectUsagePercent())
 
             print("Extracting percentage of usage by Demographic ...")
@@ -103,6 +107,8 @@ class ReportFormat(object):
                 accounts_data.append((":".join(groups), ":".join(values)))
 
             self.formatTable(header=[], indent="X[l] X[l]", data=accounts_data)
+            # self.formatTable(header=[], indent="l l", data=accounts_data)
+
 
             #-----------------------TAO Stats---------------------------------------------------
 
@@ -225,14 +231,14 @@ class ReportFormat(object):
 
             astronomyusers = report.getOzSTARUsersCount([('gum_department.is_astronomy', ASTRONOMY)])
             activeastronomyusers = report.getSlurmActiveUsersCount([('gum_department.is_astronomy', ASTRONOMY)])
-            astronomymales = report.getOzSTARUsersCount([
-                ('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', MALE)])
-            activeastronomymales = report.getSlurmActiveUsersCount(
-                [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', MALE)])
-            astronomyfemales = report.getOzSTARUsersCount(
-                [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', FEMALE)])
-            activeastronomyfemales = report.getSlurmActiveUsersCount(
-                [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', FEMALE)])
+            # astronomymales = report.getOzSTARUsersCount([
+            #     ('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', MALE)])
+            # activeastronomymales = report.getSlurmActiveUsersCount(
+            #     [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', MALE)])
+            # astronomyfemales = report.getOzSTARUsersCount(
+            #     [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', FEMALE)])
+            # activeastronomyfemales = report.getSlurmActiveUsersCount(
+            #     [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.gender', FEMALE)])
             astronomystudents = report.getOzSTARUsersCount(
                 [('gum_department.is_astronomy', ASTRONOMY), ('gum_user.is_student', STUDENT)])
             activeastronomystudents = report.getSlurmActiveUsersCount(
@@ -241,8 +247,8 @@ class ReportFormat(object):
             activeswinastro = report.getSlurmActiveSwinAstronomersCount()
 
             accounts_data.append(("All", astronomyusers, activeastronomyusers))
-            accounts_data.append(("Male", astronomymales, activeastronomymales))
-            accounts_data.append(("Female", astronomyfemales, activeastronomyfemales))
+            # accounts_data.append(("Male", astronomymales, activeastronomymales))
+            # accounts_data.append(("Female", astronomyfemales, activeastronomyfemales))
             accounts_data.append(("PhD Student", astronomystudents, activeastronomystudents))
             accounts_data.append(("Swinburne", swinastro, activeswinastro))
 
@@ -257,6 +263,8 @@ class ReportFormat(object):
             self.doc.append(Section("Share of CPU hours usage by project"))
             self.formatTable(header=["Project", "Percentage of Total Usage"], indent="X[l] X[r]",
                              data=report.getSlurmProjectUsagePercent())
+            # self.formatTable(header=["Project", "Usage", "Percent"], indent="X[l] X[r] X[r] ",
+            #                  data=report.getSlurmProjectUsage())
 
             print("Extracting percentage of usage by Demographic ...")
             self.doc.append(Section("Usage by Demographic"))
@@ -274,7 +282,7 @@ class ReportFormat(object):
                 self.addTAOStats(taoreport)
 
             # Generating PDF file
-            self.doc.generate_pdf(myfilename, clean_tex=False)
+            self.doc.generate_pdf(myfilename, clean_tex=False, compiler='pdflatex')
 
         except Exception as exp:
             raise exp
@@ -287,7 +295,9 @@ class ReportFormat(object):
 
     def formatTable(self, header, data, indent):
 
+        # with self.doc.create(LongTabu(indent)) as data_table:
         with self.doc.create(LongTabu(indent)) as data_table:
+
             if header != []:
                 data_table.add_row(header, mapper=[bold])
                 data_table.add_hline()
@@ -319,8 +329,8 @@ class ReportFormat(object):
             txtfile.write("Astronomy account holders(total/active for quarter): \n")
             txtfile.write("\n")
             txtfile.write("All:           {0}/{1} \n".format(report.getUsersCount(), report.getActiveUsersCount()))
-            txtfile.write("Male:          {0}/{1} \n".format(report.getUsersCount([('is_astronomy', 1), ('gender', 2)]), report.getActiveUsersCount([('is_astronomy', 1), ('gender', 2)])))
-            txtfile.write("Female:        {0}/{1} \n".format(report.getUsersCount([('is_astronomy', 1), ('gender', 1)]), report.getActiveUsersCount([('is_astronomy', 1), ('gender', 1)])))
+            # txtfile.write("Male:          {0}/{1} \n".format(report.getUsersCount([('is_astronomy', 1), ('gender', 2)]), report.getActiveUsersCount([('is_astronomy', 1), ('gender', 2)])))
+            # txtfile.write("Female:        {0}/{1} \n".format(report.getUsersCount([('is_astronomy', 1), ('gender', 1)]), report.getActiveUsersCount([('is_astronomy', 1), ('gender', 1)])))
             txtfile.write("PhD Student:   {0}/{1} \n".format(report.getUsersCount([('is_astronomy', 1), ('student', 1)]), report.getActiveUsersCount([('is_astronomy', 1), ('student', 1)])))
             txtfile.write("Swinburne:     {0}/{1} \n".format(report.getSwinAstronomersCount(), report.getActiveSwinAstronomersCount()))
             txtfile.write("\n\n")

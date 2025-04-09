@@ -1,11 +1,8 @@
 import sys
-import datetime
 from builtins import Exception, len
 
 import pandas as pd
 
-from reportFromDB import Report
-from taoreportfromdb import TAOreport, TAO5Report
 from statsConfig import readdbconfig
 
 from generateReport import ReportFormat
@@ -40,9 +37,9 @@ if __name__=='__main__':
     #
     # print(data['Account'])
 
-    filename = 'files/user_utilisation_2021_q4.txt'
-    startdate = '2021-10-01'
-    enddate = '2021-12-31'
+    filename = 'files/user_utilisation_25_q1.txt'
+    startdate = '2025-01-01'
+    enddate = '2025-03-31'
 
     data = pd.read_csv(filename, sep="|", header=None)
     data.columns = ['Cluster', 'Login', 'Name', 'Account', 'Used', 'Energy']
